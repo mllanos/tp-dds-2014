@@ -1,0 +1,3 @@
+package ar.edu.utn.frba.dds.OPF5.domain.exceptions
+
+case class EquipoConfirmadoException(smth: String) extends Exception(smth)

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+java -cp target/OPF5-0.0.1-SNAPSHOT-shaded.jar -Djava.system.class.loader=com.uqbar.apo.APOClassLoader ar.edu.utn.frba.dds.OPF5.runnable.OPF5Application

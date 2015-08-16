@@ -1,0 +1,232 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ar.edu.utn.frba.dds</groupId>
+	<artifactId>OPF5</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<inceptionYear>2014</inceptionYear>
+
+	<properties>
+		<scala.version>2.10.4</scala.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<parent>
+		<groupId>org.uqbar-project</groupId>
+		<artifactId>uqbar-scala-parent</artifactId>
+		<version>1.0</version>
+	</parent>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>${scala.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.uqbar-project</groupId>
+			<artifactId>arena-jface</artifactId>
+			<version>3.3-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.scalatest</groupId>
+			<artifactId>scalatest_2.10</artifactId>
+			<version>2.1.3</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.joda</groupId>
+			<artifactId>joda-convert</artifactId>
+			<version>1.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>4.3.6.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.5.8</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.5.8</version>
+		</dependency>
+
+		<dependency>
+			<groupId>c3p0</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.1.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.18.1-GA</version>
+		</dependency>
+
+		<!-- MYSQL dependency -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.33</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+
+		<sourceDirectory>src/main/scala</sourceDirectory>
+
+		<testSourceDirectory>src/test/scala</testSourceDirectory>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<shadedArtifactAttached>true</shadedArtifactAttached> <!-- Make the shaded artifact not the main one -->
+					<shadedClassifierName>shaded</shadedClassifierName> <!-- set the suffix to the shaded jar -->
+					<filters>
+						<filter>
+							<artifact>*:*</artifact>
+							<excludes>
+								<exclude>META-INF/*.SF</exclude>
+								<exclude>META-INF/*.DSA</exclude>
+								<exclude>META-INF/*.RSA</exclude>
+							</excludes>
+						</filter>
+					</filters>
+					<transformers>
+						<transformer
+							implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+							<mainClass>ar.edu.utn.frba.dds.OPF5.runnable.OPF5Application</mainClass>
+						</transformer>
+						<transformer
+							implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+					</transformers>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.akathist.maven.plugins.launch4j</groupId>
+				<artifactId>launch4j-maven-plugin</artifactId>
+				<version>1.5.2</version>
+				<executions>
+					<execution>
+						<id>l4j-clui</id>
+						<phase>package</phase>
+						<goals>
+							<goal>launch4j</goal>
+						</goals>
+						<configuration>
+							<headerType>gui</headerType>
+							<jar>${project.build.directory}/${project.artifactId}-${project.version}-shaded.jar</jar>
+							<outfile>${project.build.directory}/OPF5Application.exe</outfile>
+							<downloadUrl>http://java.com/download</downloadUrl>
+							<classPath>
+								<mainClass>ar.edu.utn.frba.dds.OPF5.runnable.OPF5Application</mainClass>
+							</classPath>
+							<icon>src/main/resources/icons/football.ico</icon>
+							<jre>
+								<minVersion>1.7.0</minVersion>
+								<jdkPreference>preferJre</jdkPreference>
+								<opts>
+									<opt>-Djava.system.class.loader=com.uqbar.apo.APOClassLoader</opt>
+								</opts>
+							</jre>
+							<versionInfo>
+								<fileVersion>1.0.0.0</fileVersion>
+								<txtFileVersion>${project.version}</txtFileVersion>
+								<fileDescription>Trabajo Práctico de Diseño de Sistemas</fileDescription>
+								<copyright>2014</copyright>
+								<productVersion>1.0.0.0</productVersion>
+								<txtProductVersion>1.0.0.0</txtProductVersion>
+								<productName>${project.name}</productName>
+								<companyName>UTN Regional Buenos Aires</companyName>
+								<internalName>OPF5Application</internalName>
+								<originalFilename>OPF5Application.exe</originalFilename>
+							</versionInfo>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- disable surefire -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+
+			<!-- enable scalatest -->
+			<plugin>
+				<groupId>org.scalatest</groupId>
+				<artifactId>scalatest-maven-plugin</artifactId>
+				<version>1.0</version>
+				<configuration>
+					<reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+					<junitxml>.</junitxml>
+					<filereports>WDF TestSuite.txt</filereports>
+				</configuration>
+				<executions>
+					<execution>
+						<id>test</id>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+	<repositories>
+
+		<repository>
+			<id>uqbar-wiki.org-releases</id>
+			<name>uqbar-wiki.org-releases</name>
+			<url>http://uqbar-wiki.org/mvn/releases</url>
+		</repository>
+
+		<repository>
+			<snapshots />
+			<id>uqbar-wiki.org-snapshots</id>
+			<name>uqbar-wiki.org-snapshots</name>
+			<url>http://uqbar-wiki.org/mvn/snapshots</url>
+		</repository>
+
+	</repositories>
+
+</project>
