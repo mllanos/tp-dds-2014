@@ -1,0 +1,5 @@
+./linux/crear_db
+mvn clean
+mvn install
+./linux/generar_fixture
+./linux/OPF5Application
